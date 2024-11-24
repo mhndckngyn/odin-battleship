@@ -1,1 +1,1 @@
-# webpack-template
+# The Odin Project: Battleship
