@@ -4,6 +4,10 @@ export default class Ship {
     this.hits = 0;
   }
 
+  getLength() {
+    return this.length;
+  }
+
   hit() {
     this.hits = this.hits + 1;
   }
