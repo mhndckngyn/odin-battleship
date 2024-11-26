@@ -1,1 +1,5 @@
-export default class Player {}
+export default class Player {
+  constructor(gameboard) {
+    this.gameboard = gameboard;
+  }
+}
