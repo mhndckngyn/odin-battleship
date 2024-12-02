@@ -7,7 +7,6 @@ test("the Player class exists", () => {
 })
 
 test("Player object should contain a gameboard object", () => {
-  const gameboard = new Gameboard();
-  const player = new Player(gameboard);
+  const player = new Player();
   expect(player.gameboard).toBeTruthy();
 })
