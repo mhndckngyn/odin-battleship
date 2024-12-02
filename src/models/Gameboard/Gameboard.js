@@ -1,14 +1,14 @@
 export const TILE_STATUS = {
-  NO_SHIP: null,
-  MISSED: false,
-  HIT: true,
+  NO_SHIP: 0,
+  MISSED: 1,
+  HIT: 2,
 };
 
 export default class Gameboard {
   constructor() {
     this.board = new Array(10 * 10);
     for (let i = 0; i < 100; i++) {
-      this.board[i] = null;
+      this.board[i] = TILE_STATUS.NO_SHIP;
     }
 
     this.ships = [];
@@ -40,7 +40,7 @@ export default class Gameboard {
     );
 
     for (const i of indexes) {
-      if (this.board[i] !== null) {
+      if (this.board[i] !== TILE_STATUS.NO_SHIP) {
         return false;
       }
     }
