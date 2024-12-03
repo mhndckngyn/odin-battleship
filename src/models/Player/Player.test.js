@@ -1,4 +1,3 @@
-import Gameboard from "../Gameboard";
 import Player from "./Player";
 
 test("the Player class exists", () => {
