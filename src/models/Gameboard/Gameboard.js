@@ -1,14 +1,10 @@
-export const TILE_STATUS = {
-  NO_SHIP: 0,
-  MISSED: 1,
-  HIT: 2,
-};
+import TILE_STATE from "../../Settings/tileStatus";
 
 export default class Gameboard {
   constructor() {
     this.board = new Array(10 * 10);
     for (let i = 0; i < 100; i++) {
-      this.board[i] = TILE_STATUS.NO_SHIP;
+      this.board[i] = TILE_STATE.NO_SHIP;
     }
 
     this.ships = [];
@@ -32,30 +28,28 @@ export default class Gameboard {
     return indexes;
   }
 
-  place(ship, coordinates, placeVertically = false) {
+  place(ship, coordinates, placeVertically) {
     const indexes = this.calculateBoardIndexes(
       coordinates,
       ship.getLength(),
       placeVertically,
     );
 
-    for (const i of indexes) {
-      if (this.board[i] !== TILE_STATUS.NO_SHIP) {
-        return false;
-      }
+    if (indexes.some((i) => this.board[i] !== TILE_STATE.NO_SHIP)) {
+      return false;
     }
 
-    for (const i of indexes) {
-      this.board[i] = ship;
+    if (indexes.at(-1) % 10 < indexes.at(0) % 10) {
+      return false;
     }
 
     this.ships.push(ship);
-
+    indexes.forEach((i) => (this.board[i] = ship));
     return true;
   }
 
-  calculateAttackIndex(coordnates) {
-    const { x, y } = coordnates;
+  calculateAttackIndex(coordinates) {
+    const { x, y } = coordinates;
     return y * 10 + x;
   }
 
@@ -64,20 +58,19 @@ export default class Gameboard {
     const tile = this.board[i];
 
     switch (tile) {
-      case TILE_STATUS.MISSED:
+      case TILE_STATE.MISSED:
         return false;
-      case TILE_STATUS.HIT:
+      case TILE_STATE.HIT:
         return false;
-      case TILE_STATUS.NO_SHIP:
-        this.board[i] = TILE_STATUS.MISSED;
+      case TILE_STATE.NO_SHIP:
+        this.board[i] = TILE_STATE.MISSED;
         return true;
       default:
         const ship = tile;
         ship.hit();
-        this.board[i] = TILE_STATUS.HIT;
+        this.board[i] = TILE_STATE.HIT;
+        return true;
     }
-
-    return true;
   }
 
   isAllSunk() {
