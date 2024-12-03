@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "watch": "webpack --watch",
+    "build": "webpack",
+    "start": "webpack serve --open",
     "jest-watch": "jest --watch",
     "format": "prettier . --write"
   },
@@ -28,6 +31,6 @@
     "style-loader": "^4.0.0",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.0.4"
+    "webpack-dev-server": "^5.1.0"
   }
 }
