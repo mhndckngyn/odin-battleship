@@ -1,6 +1,6 @@
+import TILE_STATE from "../../Settings/tileState";
 import Ship from "../Ship";
 import Gameboard from "./Gameboard";
-import TILE_STATE from "../../Settings/tileStatus";
 
 let gameboard;
 
@@ -59,6 +59,16 @@ describe("`place` method", () => {
       placeVertically,
     );
     expect(placeSecondShip).toEqual(false);
+  });
+
+  test("placing a ship on 2 rows should return false", () => {
+    const placeShip = gameboard.place(ship1, { x: 9, y: 0 }, false);
+    expect(placeShip).toEqual(false);
+  });
+
+  test("placing a ship on 2 columns should return false", () => {
+    const placeShip = gameboard.place(ship1, { x: 0, y: 9 }, true);
+    expect(placeShip).toEqual(false);
   });
 });
 
