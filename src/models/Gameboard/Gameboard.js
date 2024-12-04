@@ -1,4 +1,4 @@
-import TILE_STATE from "../../Settings/tileStatus";
+import TILE_STATE from "../../Settings/tileState";
 
 export default class Gameboard {
   constructor() {
@@ -39,7 +39,11 @@ export default class Gameboard {
       return false;
     }
 
-    if (indexes.at(-1) % 10 < indexes.at(0) % 10) {
+    if (placeVertically && indexes.at(-1) % 10 !== indexes.at(0) % 10) {
+      return false;
+    }
+
+    if (!placeVertically && indexes.at(-1) % 10 < indexes.at(0) % 10) {
       return false;
     }
 
