@@ -1,0 +1,55 @@
+:root {
+  --board-tile-border: 1px solid #9393ff;
+  --board-tile-bg: #ffffff;
+
+  --board-tile-border-hover: #40bf44;
+  --board-tile-bg-hover: #f5fcf5;
+
+  --board-tile-ship-bg: #f2f2ff;
+}
+
+#board-area {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.row {
+  border-top: var(--board-tile-border);
+  border-left: var(--board-tile-border);
+
+  &:last-child {
+    border-bottom: var(--board-tile-border);
+  }
+}
+
+.tile {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0px;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  border-right: var(--board-tile-border);
+  background-color: var(--board-tile-bg);
+
+  &:hover {
+    border: 2px solid var(--board-tile-border-hover);
+    background-color: var(--board-tile-bg-hover);
+  }
+
+  &.unknown {
+    background-color: #ffffff;
+  }
+
+  &.hit {
+    background-color: #ff8d8d;
+  }
+
+  &.missed {
+    background-color: #ffffbe;
+  }
+
+  &.ship {
+    background-color: #cff3ff;
+  }
+}

@@ -1,5 +1,6 @@
+import TILE_STATE from "../../Settings/tileState";
 import Ship from "../Ship";
-import Gameboard, { TILE_STATUS } from "./Gameboard";
+import Gameboard from "./Gameboard";
 
 let gameboard;
 
@@ -59,6 +60,16 @@ describe("`place` method", () => {
     );
     expect(placeSecondShip).toEqual(false);
   });
+
+  test("placing a ship on 2 rows should return false", () => {
+    const placeShip = gameboard.place(ship1, { x: 9, y: 0 }, false);
+    expect(placeShip).toEqual(false);
+  });
+
+  test("placing a ship on 2 columns should return false", () => {
+    const placeShip = gameboard.place(ship1, { x: 0, y: 9 }, true);
+    expect(placeShip).toEqual(false);
+  });
 });
 
 describe("`receiveAttack` method", () => {
@@ -90,13 +101,13 @@ describe("`receiveAttack` method", () => {
 
   test("if the attack misses, it should mark the tile as missed", () => {
     gameboard.receiveAttack({ x: 1, y: 0 });
-    expect(gameboard.board[1]).toEqual(TILE_STATUS.MISSED);
+    expect(gameboard.board[1]).toEqual(TILE_STATE.MISSED);
   });
 
   test("if the attack hits, it should mark the tile as hit and should increase the number of hits the ship has taken", () => {
     gameboard.receiveAttack({ x: 0, y: 0 });
     expect(ship.hits).toEqual(1);
-    expect(gameboard.board[0]).toEqual(TILE_STATUS.HIT);
+    expect(gameboard.board[0]).toEqual(TILE_STATE.HIT);
   });
 });
 
