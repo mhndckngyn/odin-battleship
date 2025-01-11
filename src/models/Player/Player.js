@@ -1,4 +1,5 @@
 import Gameboard from "../Gameboard";
+import Ship from "../Ship";
 
 export default class Player {
   constructor() {
@@ -10,10 +11,19 @@ export default class Player {
   }
 
   receiveAttack(coord) {
-    this.gameboard.receiveAttack(coord);
+    return this.gameboard.receiveAttack(coord);
   }
 
   isAllSunk() {
     return this.gameboard.isAllSunk();
+  }
+  
+  setUpBoard(shipMap) {
+    shipMap.forEach(s => {
+      const ship = new Ship(s.length);
+      this.gameboard.place(ship, s.coord, s.placeVertically);
+    })
+
+    return this.getBoard();
   }
 }

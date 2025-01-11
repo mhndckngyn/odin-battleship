@@ -1,68 +1,67 @@
-import PubSub from "../../modules/pubSub";
-import {
-  psBoardChanged,
-  psGameEnded,
-  psHumanPlayTurn,
-  psToHumanTurn,
-} from "../../Settings/pubSubEvents";
-import BotPlayer from "../BotPlayer";
+import Bot from "../Bot";
 import Player from "../Player";
 
 export default class GameController {
-  constructor() {
-    this.humanPlayer = new Player();
-    this.botPlayer = new BotPlayer();
-    [this.attackingPlayer, this.defendingPlayer] = [
-      this.humanPlayer,
-      this.botPlayer,
-    ];
+  playerName = "Player";
+  botName = "Bot";
 
-    PubSub.subscribe(psHumanPlayTurn, this.humanPlayTurn.bind(this));
-    this.publishBoardsChanged();
+  constructor(UIHandler, playerMap) {
+    this._UIHandler = UIHandler;
+    
+    this.player = new Player();
+    const playerBoard = this.player.setUpBoard(playerMap);
+    this._UIHandler.createPlayerBoard(playerBoard);
+    this.attacker = this.player;
+
+    this.bot = new Bot();
+    this.defender = this.bot;
+    
+    this.isGameEnded = false;
   }
 
-  publishBoardsChanged() {
-    PubSub.publish(psBoardChanged, {
-      humanBoard: this.humanPlayer.getBoard(),
-      botBoard: this.botPlayer.getBoard(),
-    });
+  async requestPlayerMove() {
+    const coord = await this._UIHandler.requestPlayerMove();
+    return coord;
+  }
+  
+  async playPlayerTurn() {
+    const coord = await this.requestPlayerMove();
+    const isHit = this.bot.receiveAttack(coord);
+    this._UIHandler.updateBotBoard(coord, isHit);
+    this._UIHandler.announceTurnResult(this.playerName, coord, isHit);
   }
 
-  humanPlayTurn(coord) {
-    if (this.attackingPlayer !== this.humanPlayer) {
-      return;
+  playBotTurn() {
+    const coord = this.bot.selectNextTile();
+    const isHit = this.player.receiveAttack(coord);
+    this._UIHandler.updatePlayerBoard(coord, isHit);
+    this._UIHandler.announceTurnResult(this.botName, coord, isHit);
+  }
+
+  switchTurn() {
+    [this.attacker, this.defender] = [this.defender, this.attacker];
+  }
+
+  announceGameEnd() {
+    const winner = this.attacker === this.player ? this.playerName : this.botName;
+    this._UIHandler.announceGameEnd(winner);
+  }
+
+  async main() {
+    while (!this.isGameEnded) {
+      if (this.attacker === this.player) {
+        await this.playPlayerTurn();
+      } else {
+        this.playBotTurn();
+      }
+
+      if (this.defender.isAllSunk()) {
+        this.isGameEnded = true;
+      } else {
+        this.switchTurn();
+      }
     }
-
-    this.botPlayer.receiveAttack(coord);
-    this.finishTurn();
-  }
-
-  botPlayTurn() {
-    const coord = this.botPlayer.playTurn();
-    this.humanPlayer.receiveAttack(coord);
-    this.finishTurn();
-  }
-
-  switchPlayerTurn() {
-    [this.attackingPlayer, this.defendingPlayer] = [
-      this.defendingPlayer,
-      this.attackingPlayer,
-    ];
-  }
-
-  finishTurn() {
-    this.publishBoardsChanged();
-
-    if (this.defendingPlayer.isAllSunk()) {
-      PubSub.publish(psGameEnded);
-      return;
-    }
-
-    this.switchPlayerTurn();
-    if (this.attackingPlayer === this.humanPlayer) {
-      PubSub.publish(psToHumanTurn);
-    } else {
-      this.botPlayTurn();
-    }
+  
+    this.announceGameEnd();
   }
 }
