@@ -1,4 +1,4 @@
-import TILE_STATE from "../../Settings/tileState";
+import TILE_STATE from "../../settings/tileState";
 
 export default class Gameboard {
   constructor() {
@@ -10,7 +10,7 @@ export default class Gameboard {
     this.ships = [];
   }
 
-  calculateBoardIndexes(coordinates, length, placeVertically) {
+  calculateShipIndexes(coordinates, length, placeVertically) {
     const indexes = [];
     const { x, y } = coordinates;
     const startingIndex = y * 10 + x;
@@ -29,21 +29,13 @@ export default class Gameboard {
   }
 
   place(ship, coordinates, placeVertically) {
-    const indexes = this.calculateBoardIndexes(
+    const indexes = this.calculateShipIndexes(
       coordinates,
       ship.getLength(),
       placeVertically,
     );
 
-    if (indexes.some((i) => this.board[i] !== TILE_STATE.NO_SHIP)) {
-      return false;
-    }
-
-    if (placeVertically && indexes.at(-1) % 10 !== indexes.at(0) % 10) {
-      return false;
-    }
-
-    if (!placeVertically && indexes.at(-1) % 10 < indexes.at(0) % 10) {
+    if (!this.isPlaceable(indexes, placeVertically)) {
       return false;
     }
 
@@ -52,29 +44,43 @@ export default class Gameboard {
     return true;
   }
 
+  isPlaceable(indexes, placeVertically) {
+    if (indexes.some((i) => this.board[i] !== TILE_STATE.NO_SHIP)) {
+      // cannot place on occupied tile
+      return false;
+    }
+
+    if (placeVertically && indexes.at(-1) % 10 !== indexes.at(0) % 10) {
+      // cannot place on 2 columns
+      return false;
+    }
+
+    if (!placeVertically && indexes.at(-1) % 10 < indexes.at(0) % 10) {
+      // cannot place on 2 rows
+      return false;
+    }
+
+    return true;
+  }
+
   calculateAttackIndex(coordinates) {
     const { x, y } = coordinates;
-    return y * 10 + x;
+    return y * 10 + Number(x);
   }
 
   receiveAttack(coordinates) {
     const i = this.calculateAttackIndex(coordinates);
     const tile = this.board[i];
 
-    switch (tile) {
-      case TILE_STATE.MISSED:
-        return false;
-      case TILE_STATE.HIT:
-        return false;
-      case TILE_STATE.NO_SHIP:
-        this.board[i] = TILE_STATE.MISSED;
-        return true;
-      default:
-        const ship = tile;
-        ship.hit();
-        this.board[i] = TILE_STATE.HIT;
-        return true;
+    if (tile === TILE_STATE.NO_SHIP) {
+      this.board[i] = TILE_STATE.MISSED;
+      return false;
     }
+
+    const shipOnTile = tile;
+    shipOnTile.hit();
+    this.board[i] = TILE_STATE.HIT;
+    return true;
   }
 
   isAllSunk() {

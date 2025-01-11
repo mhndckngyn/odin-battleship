@@ -1,11 +1,16 @@
 :root {
-  --board-tile-border: 1px solid #9393ff;
-  --board-tile-bg: #ffffff;
+  --tile-border: #9393ff;
+  --tile-bg: #ffffff;
+  --tile-ship-bg: #ccccfc;
+  --tile-hit-bg: #ff8d8d;
+  --tile-missed-bg: #bbffdc;
+  --tile-ship-bg: #b7edff;
+  --tile-hover-bg: #fff7c6;
+  --board-label: #5c5c5c;
+}
 
-  --board-tile-border-hover: #40bf44;
-  --board-tile-bg-hover: #f5fcf5;
-
-  --board-tile-ship-bg: #f2f2ff;
+body {
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #board-area {
@@ -14,42 +19,63 @@
 }
 
 .row {
-  border-top: var(--board-tile-border);
-  border-left: var(--board-tile-border);
+  border-top: var(--tile-border);
+  border-left: var(--tile-border);
 
   &:last-child {
-    border-bottom: var(--board-tile-border);
+    border-bottom: var(--tile-border);
   }
 }
 
 .tile {
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 0px;
-  border-top: none;
-  border-bottom: none;
-  border-left: none;
-  border-right: var(--board-tile-border);
-  background-color: var(--board-tile-bg);
+  border: 1px solid var(--tile-border);
+  background-color: var(--tile-bg);
 
   &:hover {
-    border: 2px solid var(--board-tile-border-hover);
-    background-color: var(--board-tile-bg-hover);
-  }
-
-  &.unknown {
-    background-color: #ffffff;
+    background-color: var(--tile-hover-bg) !important;
   }
 
   &.hit {
-    background-color: #ff8d8d;
+    background-color: var(--tile-hit-bg);
   }
 
   &.missed {
-    background-color: #ffffbe;
+    background-color: var(--tile-missed-bg);
   }
 
   &.ship {
-    background-color: #cff3ff;
+    background-color: var(--tile-ship-bg);
   }
+}
+
+.board-row:nth-child(2) > .tile {
+  border-top: 2px solid var(--tile-border);
+}
+
+.board-row:last-child > .tile {
+  border-bottom: 2px solid var(--tile-border);
+}
+
+.tile:nth-child(2) {
+  border-left: 2px solid var(--tile-border);
+}
+
+.tile:last-child {
+  border-right: 2px solid var(--tile-border);
+}
+
+.label-row,
+.board-row {
+  display: flex;
+}
+
+.board-label {
+  font-size: 0.85rem;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--board-label);
 }
