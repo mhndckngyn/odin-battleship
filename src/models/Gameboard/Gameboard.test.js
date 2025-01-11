@@ -15,7 +15,7 @@ test("the Gameboard class exists", () => {
 describe("`place` method", () => {
   let ship1;
   let ship2;
-  const coordinates = { x: 0, y: 0 };
+  const coordinate = { x: 0, y: 0 };
   const placeVertically = true;
 
   beforeEach(() => {
@@ -24,15 +24,15 @@ describe("`place` method", () => {
     ship2 = new Ship(length);
   });
 
-  test("placing a ship at a valid coordinates should return true and place the ship on that tile accordingly", () => {
-    const placeFirstShip = gameboard.place(ship1, coordinates, placeVertically);
+  test("placing a ship at a valid coordinate should return true and place the ship on that tile accordingly", () => {
+    const placeFirstShip = gameboard.place(ship1, coordinate, placeVertically);
     expect(placeFirstShip).toEqual(true);
     expect(gameboard.board[0]).toBe(ship1);
     expect(gameboard.board[10]).toBe(ship1);
   });
 
   test("placing 2 ships non-overlapping should return true", () => {
-    gameboard.place(ship1, coordinates, placeVertically);
+    gameboard.place(ship1, coordinate, placeVertically);
     const placeSecondShip = gameboard.place(
       ship2,
       { x: 1, y: 0 },
@@ -42,20 +42,20 @@ describe("`place` method", () => {
   });
 
   test("placing a ship on top of another should return false (1)", () => {
-    gameboard.place(ship1, coordinates, !placeVertically);
+    gameboard.place(ship1, coordinate, !placeVertically);
     const placeSecondShip = gameboard.place(
       ship2,
-      coordinates,
+      coordinate,
       placeVertically,
     );
     expect(placeSecondShip).toEqual(false);
   });
 
   test("placing a ship on top of another should return false (2)", () => {
-    gameboard.place(ship1, coordinates, placeVertically);
+    gameboard.place(ship1, coordinate, placeVertically);
     const placeSecondShip = gameboard.place(
       ship2,
-      coordinates,
+      coordinate,
       placeVertically,
     );
     expect(placeSecondShip).toEqual(false);
@@ -75,12 +75,12 @@ describe("`place` method", () => {
 describe("`receiveAttack` method", () => {
   let ship;
   const length = 2;
-  const coordinates = { x: 0, y: 0 };
+  const coordinate = { x: 0, y: 0 };
   const placeVertically = true;
 
   beforeEach(() => {
     ship = new Ship(length);
-    gameboard.place(ship, coordinates, placeVertically);
+    gameboard.place(ship, coordinate, placeVertically);
   });
 
   test("if the attack is not on a marked tile, it should return true (1)", () => {
@@ -116,10 +116,10 @@ describe("test public methods altogether", () => {
     const length = 2;
     const ship = new Ship(length);
 
-    const coordinates = { x: 0, y: 0 };
+    const coordinate = { x: 0, y: 0 };
     const placeVertically = true;
 
-    gameboard.place(ship, coordinates, placeVertically);
+    gameboard.place(ship, coordinate, placeVertically);
 
     const attackAt = [
       { x: 0, y: 0 },
@@ -133,8 +133,8 @@ describe("test public methods altogether", () => {
       if (gameboard.isAllSunk()) {
         break;
       }
-      const coord = attackAt[i];
-      gameboard.receiveAttack(coord);
+      const coordinate = attackAt[i];
+      gameboard.receiveAttack(coordinate);
     }
 
     expect(gameboard.isAllSunk()).toBe(true);
@@ -147,8 +147,8 @@ describe("test public methods altogether", () => {
     const ship1 = new Ship(length1);
     const ship2 = new Ship(length2);
 
-    const coordinates1 = { x: 0, y: 0 };
-    const coordinates2 = { x: 1, y: 3 };
+    const coordinate1 = { x: 0, y: 0 };
+    const coordinate2 = { x: 1, y: 3 };
     const placeVertically = true;
 
     const attackAt = [
@@ -162,8 +162,8 @@ describe("test public methods altogether", () => {
       { x: 2, y: 3 }, // hits ship2
     ];
 
-    gameboard.place(ship1, coordinates1, placeVertically);
-    gameboard.place(ship2, coordinates2, !placeVertically);
+    gameboard.place(ship1, coordinate1, placeVertically);
+    gameboard.place(ship2, coordinate2, !placeVertically);
 
     expect(gameboard.isAllSunk()).toBe(false);
 
@@ -172,8 +172,8 @@ describe("test public methods altogether", () => {
       if (gameboard.isAllSunk()) {
         break;
       }
-      const coord = attackAt[i];
-      gameboard.receiveAttack(coord);
+      const coordinate = attackAt[i];
+      gameboard.receiveAttack(coordinate);
     }
 
     expect(gameboard.isAllSunk()).toEqual(true);

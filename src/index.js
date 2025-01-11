@@ -10,7 +10,7 @@ function getPlayerMap() {
   const shipsPlacement = [
     {
       length: 2,
-      coord: {
+      coordinate: {
         x: 0,
         y: 0,
       },
@@ -18,7 +18,7 @@ function getPlayerMap() {
     },
     {
       length: 2,
-      coord: {
+      coordinate: {
         x: 1,
         y: 0,
       },
@@ -26,7 +26,7 @@ function getPlayerMap() {
     },
     {
       length: 3,
-      coord: {
+      coordinate: {
         x: 2,
         y: 0,
       },
@@ -34,7 +34,7 @@ function getPlayerMap() {
     },
     {
       length: 4,
-      coord: {
+      coordinate: {
         x: 3,
         y: 0,
       },
@@ -42,7 +42,7 @@ function getPlayerMap() {
     },
     {
       length: 5,
-      coord: {
+      coordinate: {
         x: 4,
         y: 0,
       },
@@ -54,7 +54,7 @@ function getPlayerMap() {
 
 startButton.addEventListener("click", () => {
   const playerMap = getPlayerMap();
-  const uiHandler = new UIHandler();
+  const uiHandler = new UIHandler(playerMap);
   const gameController = new GameController(uiHandler, playerMap);
   boardArea.replaceChildren(uiHandler.playerBoard, uiHandler.botBoard);
   announcer.append(...uiHandler.announcers);

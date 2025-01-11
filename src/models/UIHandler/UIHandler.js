@@ -1,12 +1,12 @@
 import createElement from "../../modules/createElement";
-import TILE_STATE from "../../settings/tileState";
 
 class UIHandler {
   playerBoardId = "player-board";
   botBoardId = "bot-board";
 
-  constructor() {
+  constructor(playerMap) {
     this.botBoard = this.createBotBoard();
+    this.playerBoard = this.createPlayerBoard(playerMap);
     this.announcers = [createElement("p"), createElement("p")];
   }
 
@@ -16,27 +16,27 @@ class UIHandler {
   }
 
   async requestPlayerMove() {
-    const coord = await this.waitUserMove(this.botBoard);
-    return coord;
+    const coordinate = await this.waitUserMove(this.botBoard);
+    return coordinate;
   }
 
   async waitUserMove(board) {
     return new Promise((resolve) => {
-      const sendCoord = (event) => {
+      const sendCoordinate = (event) => {
         const target = event.target;
         if (target.classList.contains("unknown")) {
-          board.removeEventListener("click", sendCoord);
+          board.removeEventListener("click", sendCoordinate);
           const x = target.dataset.x;
           const y = target.dataset.y;
           resolve({ x, y });
         }
       };
 
-      board.addEventListener("click", sendCoord);
+      board.addEventListener("click", sendCoordinate);
     });
   }
 
-  announceTurnResult(attacker, coord, isHit) {
+  announceTurnResult(attacker, coordinate, isHit) {
     const numberToLetter = {
       0: "A",
       1: "B",
@@ -51,7 +51,7 @@ class UIHandler {
     };
     const hitOrMiss = isHit ? "hits a ship" : "misses";
     this.addAnnouncement(
-      `${attacker} launches an attack on ${numberToLetter[coord.x]}${Number(coord.y) + 1} and ${hitOrMiss}!`,
+      `${attacker} launches an attack on ${numberToLetter[coordinate.x]}${Number(coordinate.y) + 1} and ${hitOrMiss}!`,
     );
   }
 
@@ -59,25 +59,25 @@ class UIHandler {
     this.addAnnouncement(`${winner} has won the game!`);
   }
 
-  updatePlayerBoard(coord, isHit) {
+  updatePlayerBoard(coordinate, isHit) {
     const tile = createElement("button", {
       className: ["tile", isHit ? "hit" : "missed"],
     });
-    const currentTile = this.getTileFromCoord(this.playerBoard, coord);
+    const currentTile = this.getTileFromCoord(this.playerBoard, coordinate);
     currentTile.replaceWith(tile);
   }
 
-  updateBotBoard(coord, isHit) {
+  updateBotBoard(coordinate, isHit) {
     const tile = createElement("button", {
       className: ["tile", isHit ? "hit" : "missed"],
     });
-    const currentTile = this.getTileFromCoord(this.botBoard, coord);
+    const currentTile = this.getTileFromCoord(this.botBoard, coordinate);
     currentTile.replaceWith(tile);
   }
 
-  getTileFromCoord(board, coord) {
+  getTileFromCoord(board, coordinate) {
     const tile = board.querySelector(
-      `[data-x='${coord.x}'][data-y='${coord.y}']`,
+      `[data-x='${coordinate.x}'][data-y='${coordinate.y}']`,
     );
     return tile;
   }
@@ -93,21 +93,33 @@ class UIHandler {
   }
 
   createPlayerBoard(map) {
-    function calculateTileIndex(x, y) {
-      return y * 10 + Number(x);
+    function calculateShipCoordinates(startCoordinate, length, placeVertically) {
+      const coordinates = [];
+
+      for (let i = 0; i < length; i++) {
+        const x = placeVertically ? startCoordinate.x : startCoordinate.x + i;
+        const y = placeVertically ? startCoordinate.y + i : startCoordinate.y;
+        coordinates.push({ x, y });
+      }
+
+      return coordinates;
     }
 
     const board = this.createEmptyBoard(this.playerBoardId);
-    const tiles = board.getElementsByClassName("tile");
-    for (const tile of tiles) {
-      const { x, y } = tile.dataset;
-      const i = calculateTileIndex(x, y);
-      if (map[i] !== TILE_STATE.NO_SHIP) {
+
+    for (const ship of map) {
+      const coordinates = calculateShipCoordinates(
+        ship.coordinate,
+        ship.length,
+        ship.placeVertically,
+      );
+
+      for (const c of coordinates) {
+        const tile = board.querySelector(`[data-x='${c.x}'][data-y='${c.y}']`);
         tile.classList.add("ship");
       }
     }
 
-    this.playerBoard = board;
     return board;
   }
 

@@ -9,8 +9,7 @@ export default class GameController {
     this._UIHandler = UIHandler;
     
     this.player = new Player();
-    const playerBoard = this.player.setUpBoard(playerMap);
-    this._UIHandler.createPlayerBoard(playerBoard);
+    this.player.setUpBoard(playerMap);
     this.attacker = this.player;
 
     this.bot = new Bot();
@@ -20,22 +19,22 @@ export default class GameController {
   }
 
   async requestPlayerMove() {
-    const coord = await this._UIHandler.requestPlayerMove();
-    return coord;
+    const coordinate = await this._UIHandler.requestPlayerMove();
+    return coordinate;
   }
   
   async playPlayerTurn() {
-    const coord = await this.requestPlayerMove();
-    const isHit = this.bot.receiveAttack(coord);
-    this._UIHandler.updateBotBoard(coord, isHit);
-    this._UIHandler.announceTurnResult(this.playerName, coord, isHit);
+    const coordinate = await this.requestPlayerMove();
+    const isHit = this.bot.receiveAttack(coordinate);
+    this._UIHandler.updateBotBoard(coordinate, isHit);
+    this._UIHandler.announceTurnResult(this.playerName, coordinate, isHit);
   }
 
   playBotTurn() {
-    const coord = this.bot.selectNextTile();
-    const isHit = this.player.receiveAttack(coord);
-    this._UIHandler.updatePlayerBoard(coord, isHit);
-    this._UIHandler.announceTurnResult(this.botName, coord, isHit);
+    const coordinate = this.bot.selectNextTile();
+    const isHit = this.player.receiveAttack(coordinate);
+    this._UIHandler.updatePlayerBoard(coordinate, isHit);
+    this._UIHandler.announceTurnResult(this.botName, coordinate, isHit);
   }
 
   switchTurn() {

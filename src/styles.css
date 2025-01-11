@@ -18,15 +18,6 @@ body {
   justify-content: space-evenly;
 }
 
-.row {
-  border-top: var(--tile-border);
-  border-left: var(--tile-border);
-
-  &:last-child {
-    border-bottom: var(--tile-border);
-  }
-}
-
 .tile {
   width: 2.5rem;
   height: 2.5rem;

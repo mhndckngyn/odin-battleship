@@ -48,8 +48,8 @@ export class Bot {
     return this.gameboard.board;
   }
 
-  receiveAttack(coord) {
-    return this.gameboard.receiveAttack(coord);
+  receiveAttack(coordiantes) {
+    return this.gameboard.receiveAttack(coordiantes);
   }
 
   isAllSunk() {

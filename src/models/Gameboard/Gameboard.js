@@ -10,9 +10,9 @@ export default class Gameboard {
     this.ships = [];
   }
 
-  calculateShipIndexes(coordinates, length, placeVertically) {
+  calculateShipIndexes(coordinate, length, placeVertically) {
     const indexes = [];
-    const { x, y } = coordinates;
+    const { x, y } = coordinate;
     const startingIndex = y * 10 + x;
 
     if (placeVertically) {
@@ -28,9 +28,9 @@ export default class Gameboard {
     return indexes;
   }
 
-  place(ship, coordinates, placeVertically) {
+  place(ship, coordinate, placeVertically) {
     const indexes = this.calculateShipIndexes(
-      coordinates,
+      coordinate,
       ship.getLength(),
       placeVertically,
     );
@@ -63,13 +63,13 @@ export default class Gameboard {
     return true;
   }
 
-  calculateAttackIndex(coordinates) {
-    const { x, y } = coordinates;
+  calculateAttackIndex(coordinate) {
+    const { x, y } = coordinate;
     return y * 10 + Number(x);
   }
 
-  receiveAttack(coordinates) {
-    const i = this.calculateAttackIndex(coordinates);
+  receiveAttack(coordinate) {
+    const i = this.calculateAttackIndex(coordinate);
     const tile = this.board[i];
 
     if (tile === TILE_STATE.NO_SHIP) {

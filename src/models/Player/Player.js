@@ -10,20 +10,18 @@ export default class Player {
     return this.gameboard.board;
   }
 
-  receiveAttack(coord) {
-    return this.gameboard.receiveAttack(coord);
+  receiveAttack(coordinate) {
+    return this.gameboard.receiveAttack(coordinate);
   }
 
   isAllSunk() {
     return this.gameboard.isAllSunk();
   }
   
-  setUpBoard(shipMap) {
-    shipMap.forEach(s => {
+  setUpBoard(map) {
+    map.forEach(s => {
       const ship = new Ship(s.length);
-      this.gameboard.place(ship, s.coord, s.placeVertically);
+      this.gameboard.place(ship, s.coordinate, s.placeVertically);
     })
-
-    return this.getBoard();
   }
 }
