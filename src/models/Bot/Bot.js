@@ -28,7 +28,7 @@ export class Bot {
     });
   }
 
-  selectNextTile() {
+  async selectNextTile() {
     let selectedTile;
     do {
       selectedTile = {
@@ -41,7 +41,9 @@ export class Bot {
       )
     );
     this.attackedTiles.push(selectedTile);
-    return selectedTile;
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(selectedTile), 300);
+    });
   }
 
   getBoard() {

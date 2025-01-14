@@ -30,8 +30,8 @@ export default class GameController {
     this._UIHandler.announceTurnResult(this.playerName, coordinate, isHit);
   }
 
-  playBotTurn() {
-    const coordinate = this.bot.selectNextTile();
+  async playBotTurn() {
+    const coordinate = await this.bot.selectNextTile();
     const isHit = this.player.receiveAttack(coordinate);
     this._UIHandler.updatePlayerBoard(coordinate, isHit);
     this._UIHandler.announceTurnResult(this.botName, coordinate, isHit);
@@ -51,7 +51,7 @@ export default class GameController {
       if (this.attacker === this.player) {
         await this.playPlayerTurn();
       } else {
-        this.playBotTurn();
+        await this.playBotTurn();
       }
 
       if (this.defender.isAllSunk()) {
