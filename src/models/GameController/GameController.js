@@ -46,7 +46,7 @@ export default class GameController {
     this._UIHandler.announceGameEnd(winner);
   }
 
-  async main() {
+  async play() {
     while (!this.isGameEnded) {
       if (this.attacker === this.player) {
         await this.playPlayerTurn();

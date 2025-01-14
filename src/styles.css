@@ -11,24 +11,57 @@
   --tile-size: 40px;
 }
 
+/* general */
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+h1 {
+  text-align: center;
+}
+
+button:not(.tile) {
+  background-color: #5555f5;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 18px;
+}
+
+#announcer {
+  width: 500px;
+  margin: auto;
+  text-align: center;
+  font-size: 18px;
+  padding: 15px;
+  background-color: rgb(210, 241, 251);
+  border-radius: 16px;
+}
+
+/* battleship */
 
 #board-area {
   display: flex;
   justify-content: space-evenly;
 }
 
-.tile {
-  width: 2.5rem;
-  height: 2.5rem;
-  border: 1px solid var(--tile-border);
-  background-color: var(--tile-bg);
+#button-area {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
 
-  &:hover {
-    background-color: var(--tile-hover-bg) !important;
-  }
+button.tile {
+  background-color: var(--tile-bg);
+}
+
+.tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border: 1px solid var(--tile-border);
+  position: relative;
 
   &.hit {
     background-color: var(--tile-hit-bg);
@@ -40,6 +73,12 @@ body {
 
   &.has-ship {
     background-color: var(--tile-ship-bg);
+  }
+}
+
+#bot-board .tile {
+  &:hover {
+    background-color: var(--tile-hover-bg);
   }
 }
 

@@ -7,12 +7,19 @@ class UIHandler {
   constructor(playerMap) {
     this.botBoard = this.createBotBoard();
     this.playerBoard = this.createPlayerBoard(playerMap);
-    this.announcers = [createElement("p"), createElement("p")];
+    this.announcers = [createElement("p", {text: "Play your turn"})]; // in case we want more announcers
+  }
+
+  getBoards() {
+    return [this.playerBoard, this.botBoard];
+  }
+
+  getAnnouncers() {
+    return this.announcers;
   }
 
   addAnnouncement(message) {
-    this.announcers[0].textContent = this.announcers[1].textContent;
-    this.announcers[1].textContent = message;
+    this.announcers[0].textContent = message;
   }
 
   async requestPlayerMove() {
@@ -93,7 +100,11 @@ class UIHandler {
   }
 
   createPlayerBoard(map) {
-    function calculateShipCoordinates(startCoordinate, length, placeVertically) {
+    function calculateShipCoordinates(
+      startCoordinate,
+      length,
+      placeVertically,
+    ) {
       const coordinates = [];
 
       for (let i = 0; i < length; i++) {

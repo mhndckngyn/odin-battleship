@@ -1,62 +1,50 @@
-import "./styles.css";
+import BoardPlacer from "./models/BoardPlacer/BoardPlacer";
 import GameController from "./models/GameController";
 import UIHandler from "./models/UIHandler";
+import createElement from "./modules/createElement";
+import "./styles.css";
 
 const startButton = document.getElementById("start");
 const boardArea = document.getElementById("board-area");
 const announcer = document.getElementById("announcer");
+const buttonArea = document.getElementById("button-area");
 
-function getPlayerMap() {
-  const shipsPlacement = [
-    {
-      length: 2,
-      coordinate: {
-        x: 0,
-        y: 0,
-      },
-      placeVertically: true,
-    },
-    {
-      length: 2,
-      coordinate: {
-        x: 1,
-        y: 0,
-      },
-      placeVertically: true,
-    },
-    {
-      length: 3,
-      coordinate: {
-        x: 2,
-        y: 0,
-      },
-      placeVertically: true,
-    },
-    {
-      length: 4,
-      coordinate: {
-        x: 3,
-        y: 0,
-      },
-      placeVertically: true,
-    },
-    {
-      length: 5,
-      coordinate: {
-        x: 4,
-        y: 0,
-      },
-      placeVertically: true,
-    },
+async function setBoard() {
+  const boardPlacer = new BoardPlacer();
+  const [board, finishPlacingButton] = boardPlacer.getUI();
+
+  // set up buttons and labels
+  startButton.classList.add("hidden");
+  boardArea.replaceChildren(board);
+  buttonArea.appendChild(finishPlacingButton);
+  const announcers = [
+    createElement("p", {
+      text: "Click to rotate ships, drag to move them around.",
+    }),
   ];
-  return shipsPlacement;  
+  announcer.replaceChildren(...announcers);
+
+  // wait until user finishes placing
+  const playerMap = await boardPlacer.waitUserStart();
+  finishPlacingButton.remove();
+  return playerMap;
 }
 
-startButton.addEventListener("click", () => {
-  const playerMap = getPlayerMap();
+async function playGame(playerMap) {
   const uiHandler = new UIHandler(playerMap);
   const gameController = new GameController(uiHandler, playerMap);
-  boardArea.replaceChildren(uiHandler.playerBoard, uiHandler.botBoard);
-  announcer.append(...uiHandler.announcers);
-  gameController.main();
-});
+  boardArea.replaceChildren(...uiHandler.getBoards());
+  announcer.replaceChildren(...uiHandler.getAnnouncers());
+  await gameController.play();
+
+  // game ended
+  startButton.classList.remove("hidden");
+  startButton.textContent = "Play again";
+}
+
+async function startHandler() {
+  const playerMap = await setBoard();
+  playGame(playerMap);
+}
+
+startButton.addEventListener("click", startHandler);
