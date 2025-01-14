@@ -116,7 +116,7 @@ class UIHandler {
 
       for (const c of coordinates) {
         const tile = board.querySelector(`[data-x='${c.x}'][data-y='${c.y}']`);
-        tile.classList.add("ship");
+        tile.classList.add("has-ship");
       }
     }
 
@@ -129,10 +129,10 @@ class UIHandler {
     // create labels for columns
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     const lettersRow = [
-      createElement("div", { className: ["board-label"] }),
+      createElement("div", { className: ["label"] }), // empty tile at the corner
       ...letters.map((letter) => {
         const container = createElement("div", {
-          className: ["board-label"],
+          className: ["label"],
           text: letter,
         });
         return container;
@@ -147,7 +147,7 @@ class UIHandler {
       const row = [];
       row.push(
         createElement("div", {
-          className: ["board-label"],
+          className: ["label"],
           text: y + 1,
         }),
       );

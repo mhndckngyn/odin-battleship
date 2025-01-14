@@ -7,6 +7,8 @@
   --tile-ship-bg: #b7edff;
   --tile-hover-bg: #fff7c6;
   --board-label: #5c5c5c;
+
+  --tile-size: 40px;
 }
 
 body {
@@ -36,7 +38,7 @@ body {
     background-color: var(--tile-missed-bg);
   }
 
-  &.ship {
+  &.has-ship {
     background-color: var(--tile-ship-bg);
   }
 }
@@ -62,11 +64,31 @@ body {
   display: flex;
 }
 
-.board-label {
+.label {
   font-size: 0.85rem;
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--tile-size);
+  height: var(--tile-size);
   color: var(--board-label);
+}
+
+.hidden {
+  display: none;
+}
+
+/* board placer */
+.ship {
+  background-color: #5555f5;
+  opacity: 0.3;
+  /* make ship clickable on every tile it spans */
+  position: relative;
+  z-index: 1;
+}
+
+.shadow {
+  background-color: #ffd4a7;
+  /* make it not re-rendered every dragenter event */
+  position: relative;
+  z-index: -1;
 }
