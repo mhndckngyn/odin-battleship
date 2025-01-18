@@ -6,7 +6,7 @@ export default function createEmptyBoard(id) {
   // create labels for columns
   const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const lettersRow = [
-    createElement("div", { className: ["label"] }),
+    createElement("div", { className: ["label"] }), // empty tile at the corner
     ...letters.map((letter) => {
       const container = createElement("div", {
         className: ["label"],

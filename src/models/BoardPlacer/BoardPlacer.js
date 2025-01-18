@@ -17,18 +17,15 @@ export default class BoardPlacer {
   }
 
   createShip(id, length, placeVertically) {
-    const ship = createElement("div", {
-      id: `ship-${id}`,
-      className: ["ship"],
-    });
+    const ship = createElement("div", { className: ["ship"] });
     ship.dataset.id = id;
     ship.setAttribute("draggable", "true");
 
     ship.style.width = placeVertically
       ? `${this.TILE_SIZE}px`
-      : `${this.TILE_SIZE * length + 2 * length - 2}px`;
+      : `${this.TILE_SIZE * length}px`;
     ship.style.height = placeVertically
-      ? `${this.TILE_SIZE * length + 2 * length - 2}px`
+      ? `${this.TILE_SIZE * length}px`
       : `${this.TILE_SIZE}px`;
 
     return ship;
@@ -37,7 +34,7 @@ export default class BoardPlacer {
   createUI() {
     // create board
     this.board = createEmptyBoard("setup-board");
-    // start button
+    // button
     this.startButton = createElement("button", { text: "Start game" });
     // place ships
     this.playerMap.getShipIds().forEach((id) => {
@@ -100,9 +97,9 @@ export default class BoardPlacer {
 
     ship.style.width = placeVertically
       ? `${this.TILE_SIZE}px`
-      : `${this.TILE_SIZE * length + 2 * length - 2}px`;
+      : `${this.TILE_SIZE * length}px`;
     ship.style.height = placeVertically
-      ? `${this.TILE_SIZE * length + 2 * length - 2}px`
+      ? `${this.TILE_SIZE * length}px`
       : `${this.TILE_SIZE}px`;
 
     return ship;
@@ -137,7 +134,7 @@ export default class BoardPlacer {
         x: Number(e.currentTarget.dataset.x),
         y: Number(e.currentTarget.dataset.y),
       };
-      
+
       if (
         !e.currentTarget.querySelector(".ship") &&
         this.playerMap.isPlaceable(shipId, coordinate)
@@ -145,7 +142,9 @@ export default class BoardPlacer {
         // the tile hovered does not contain a ship and the new placement is valid
         e.preventDefault();
         const { length, placeVertically } = this.playerMap.getShip(shipId);
-        e.currentTarget.appendChild(this.createShipShadow(length, placeVertically));
+        e.currentTarget.appendChild(
+          this.createShipShadow(length, placeVertically),
+        );
         e.dataTransfer.dropEffect = "move";
         e.currentTarget.dataset.placeable = "true";
       }
@@ -179,7 +178,7 @@ export default class BoardPlacer {
     }
 
     const shipId = this.getTransferId([...e.dataTransfer.items]);
-    const ship = this.board.querySelector(`#ship-${shipId}`);
+    const ship = this.board.querySelector(`[data-id="${shipId}"]`);
     // update map info
     const newCoordinate = {
       x: Number(e.currentTarget.dataset.x),

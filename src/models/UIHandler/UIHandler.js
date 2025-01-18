@@ -1,3 +1,4 @@
+import createEmptyBoard from "../../modules/createBoard";
 import createElement from "../../modules/createElement";
 
 class UIHandler {
@@ -7,7 +8,7 @@ class UIHandler {
   constructor(playerMap) {
     this.botBoard = this.createBotBoard();
     this.playerBoard = this.createPlayerBoard(playerMap);
-    this.announcers = [createElement("p", {text: "Play your turn"})]; // in case we want more announcers
+    this.announcers = [createElement("p", {text: "Play your turn."})]; // in case we want more announcers
   }
 
   getBoards() {
@@ -44,7 +45,7 @@ class UIHandler {
   }
 
   announceTurnResult(attacker, coordinate, isHit) {
-    const numberToLetter = {
+    const xCoordinate = {
       0: "A",
       1: "B",
       2: "C",
@@ -58,7 +59,7 @@ class UIHandler {
     };
     const hitOrMiss = isHit ? "hits a ship" : "misses";
     this.addAnnouncement(
-      `${attacker} launches an attack on ${numberToLetter[coordinate.x]}${Number(coordinate.y) + 1} and ${hitOrMiss}!`,
+      `${attacker} launches an attack on ${xCoordinate[coordinate.x]}${Number(coordinate.y) + 1} and ${hitOrMiss}!`,
     );
   }
 
@@ -67,22 +68,22 @@ class UIHandler {
   }
 
   updatePlayerBoard(coordinate, isHit) {
-    const tile = createElement("button", {
+    const tile = createElement("div", {
       className: ["tile", isHit ? "hit" : "missed"],
     });
-    const currentTile = this.getTileFromCoord(this.playerBoard, coordinate);
+    const currentTile = this.getTileFromCoordinate(this.playerBoard, coordinate);
     currentTile.replaceWith(tile);
   }
 
   updateBotBoard(coordinate, isHit) {
-    const tile = createElement("button", {
+    const tile = createElement("div", {
       className: ["tile", isHit ? "hit" : "missed"],
     });
-    const currentTile = this.getTileFromCoord(this.botBoard, coordinate);
+    const currentTile = this.getTileFromCoordinate(this.botBoard, coordinate);
     currentTile.replaceWith(tile);
   }
 
-  getTileFromCoord(board, coordinate) {
+  getTileFromCoordinate(board, coordinate) {
     const tile = board.querySelector(
       `[data-x='${coordinate.x}'][data-y='${coordinate.y}']`,
     );
@@ -90,7 +91,7 @@ class UIHandler {
   }
 
   createBotBoard() {
-    const board = this.createEmptyBoard(this.botBoardId);
+    const board = createEmptyBoard(this.botBoardId);
     const tiles = board.getElementsByClassName("tile");
     for (const tile of tiles) {
       tile.classList.add("unknown");
@@ -116,7 +117,7 @@ class UIHandler {
       return coordinates;
     }
 
-    const board = this.createEmptyBoard(this.playerBoardId);
+    const board = createEmptyBoard(this.playerBoardId);
 
     for (const ship of map) {
       const coordinates = calculateShipCoordinates(
@@ -131,51 +132,6 @@ class UIHandler {
       }
     }
 
-    return board;
-  }
-
-  createEmptyBoard(id) {
-    const rows = [];
-
-    // create labels for columns
-    const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    const lettersRow = [
-      createElement("div", { className: ["label"] }), // empty tile at the corner
-      ...letters.map((letter) => {
-        const container = createElement("div", {
-          className: ["label"],
-          text: letter,
-        });
-        return container;
-      }),
-    ];
-    rows.push(
-      createElement("div", { className: ["label-row"], children: lettersRow }),
-    );
-
-    // create tile rows with number label for each row
-    for (let y = 0; y < 10; y++) {
-      const row = [];
-      row.push(
-        createElement("div", {
-          className: ["label"],
-          text: y + 1,
-        }),
-      );
-      for (let x = 0; x < 10; x++) {
-        const tile = createElement("button", {
-          className: ["tile"],
-        });
-        tile.dataset.x = x;
-        tile.dataset.y = y;
-        row.push(tile);
-      }
-      rows.push(
-        createElement("div", { className: ["board-row"], children: row }),
-      );
-    }
-
-    const board = createElement("div", { id, children: rows });
     return board;
   }
 }

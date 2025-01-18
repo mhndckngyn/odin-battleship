@@ -19,7 +19,7 @@ async function setBoard() {
   buttonArea.appendChild(finishPlacingButton);
   const announcers = [
     createElement("p", {
-      text: "Click to rotate ships, drag to move them around.",
+      text: "Click to rotate ships, or drag to move them around.",
     }),
   ];
   announcer.replaceChildren(...announcers);
