@@ -1,12 +1,9 @@
+import randomIntegerInclusive from "../../modules/randomNumber";
 import SHIP_LENGTHS from "../../settings/shipLengths";
 import Gameboard from "../Gameboard";
 import Ship from "../Ship";
 
-function randomIntegerInclusive(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-export class Bot {
+export default class Bot {
   constructor() {
     this.gameboard = new Gameboard();
     this.attackedTiles = [];

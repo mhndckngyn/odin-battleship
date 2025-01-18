@@ -1,14 +1,32 @@
+import randomIntegerInclusive from "../../modules/randomNumber";
+
 export default class PlayerMap {
   constructor(shipsLength) {
     this.map = {};
-    shipsLength.forEach((length, i) => {
-      this.map[i] = {
+    this.placeShipsRandomly(shipsLength);
+  }
+
+  placeShipsRandomly(shipsLength) {
+    shipsLength.forEach((length, id) => {
+      let x;
+      let y;
+      let placeVertically;
+      while (true) {
+        placeVertically = Math.random() < 0.5;
+        x = randomIntegerInclusive(0, 9);
+        y = randomIntegerInclusive(0, 9);
+
+        if (
+          this.isInsideBoard(length, placeVertically, { x, y }) &&
+          !this.isCollided(id, length, placeVertically, { x, y })
+        ) {
+          break;
+        }
+      }
+      this.map[id] = {
         length,
-        coordinate: {
-          x: 0,
-          y: i,
-        },
-        placeVertically: false,
+        coordinate: { x, y },
+        placeVertically,
       };
     });
   }
@@ -35,7 +53,7 @@ export default class PlayerMap {
     this.map[id].coordinate.y = y;
   }
 
-  getOccupyingTilesAsNumbers(length, placeVertically, coordinate) {
+  getOccupiedTiles(length, placeVertically, coordinate) {
     const { x, y } = coordinate;
     const tiles = [];
     if (placeVertically) {
@@ -47,6 +65,7 @@ export default class PlayerMap {
         tiles.push({ x: x + i, y });
       }
     }
+
     return tiles.map((tile) => tile.y * 10 + Number(tile.x));
   }
 
@@ -57,30 +76,29 @@ export default class PlayerMap {
       : Number(x) + length <= 10;
   }
 
-  isCollided(id, placeVertically, coordinate) {
+  isCollided(id, length, placeVertically, coordinate) {
     // get tiles occupied by other ships
     const occupiedTiles = this.getShipIds()
       .filter((shipId) => shipId !== id)
       .flatMap((shipId) => {
         const currentShip = this.getShip(shipId);
-        return this.getOccupyingTilesAsNumbers(
+        return this.getOccupiedTiles(
           currentShip.length,
           currentShip.placeVertically,
           currentShip.coordinate,
         );
       });
 
-    // create a set from occupied tiles (might not be necessary)
-    const set = new Set(occupiedTiles);
-
-    const ship = this.getShip(id);
+    // create a set from occupied tiles (can be omitted)
+    const occupiedSet = new Set(occupiedTiles);
     // check validity of new placement
-    for (const tile of this.getOccupyingTilesAsNumbers(
-      ship.length,
+    const newPlacementTiles = this.getOccupiedTiles(
+      length,
       placeVertically,
       coordinate,
-    )) {
-      if (set.has(tile)) {
+    );
+    for (const tile of newPlacementTiles) {
+      if (occupiedSet.has(tile)) {
         return true;
       }
     }
@@ -92,7 +110,7 @@ export default class PlayerMap {
     const ship = this.getShip(id);
     return (
       this.isInsideBoard(ship.length, ship.placeVertically, newCoordinate) &&
-      !this.isCollided(id, ship.placeVertically, newCoordinate)
+      !this.isCollided(id, ship.length, ship.placeVertically, newCoordinate)
     );
   }
 
@@ -100,7 +118,7 @@ export default class PlayerMap {
     const ship = this.getShip(id);
     return (
       this.isInsideBoard(ship.length, !ship.placeVertically, ship.coordinate) &&
-      !this.isCollided(id, !ship.placeVertically, ship.coordinate)
+      !this.isCollided(id, ship.length, !ship.placeVertically, ship.coordinate)
     );
   }
 }
