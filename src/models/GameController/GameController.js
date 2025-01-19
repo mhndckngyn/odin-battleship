@@ -7,14 +7,14 @@ export default class GameController {
 
   constructor(UIHandler, playerMap) {
     this._UIHandler = UIHandler;
-    
+
     this.player = new Player();
     this.player.setUpBoard(playerMap);
     this.attacker = this.player;
 
     this.bot = new Bot();
     this.defender = this.bot;
-    
+
     this.isGameEnded = false;
   }
 
@@ -22,7 +22,7 @@ export default class GameController {
     const coordinate = await this._UIHandler.requestPlayerMove();
     return coordinate;
   }
-  
+
   async playPlayerTurn() {
     const coordinate = await this.requestPlayerMove();
     const isHit = this.bot.receiveAttack(coordinate);
@@ -35,6 +35,7 @@ export default class GameController {
     const isHit = this.player.receiveAttack(coordinate);
     this._UIHandler.updatePlayerBoard(coordinate, isHit);
     this._UIHandler.announceTurnResult(this.botName, coordinate, isHit);
+    return isHit;
   }
 
   switchTurn() {
@@ -42,7 +43,8 @@ export default class GameController {
   }
 
   announceGameEnd() {
-    const winner = this.attacker === this.player ? this.playerName : this.botName;
+    const winner =
+      this.attacker === this.player ? this.playerName : this.botName;
     this._UIHandler.announceGameEnd(winner);
   }
 
@@ -51,7 +53,10 @@ export default class GameController {
       if (this.attacker === this.player) {
         await this.playPlayerTurn();
       } else {
-        await this.playBotTurn();
+        const isHit = await this.playBotTurn();
+        if (isHit) {
+          this.bot.registerHit();
+        }
       }
 
       if (this.defender.isAllSunk()) {
@@ -60,7 +65,7 @@ export default class GameController {
         this.switchTurn();
       }
     }
-  
+
     this.announceGameEnd();
   }
 }
