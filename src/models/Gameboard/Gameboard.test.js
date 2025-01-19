@@ -43,21 +43,13 @@ describe("`place` method", () => {
 
   test("placing a ship on top of another should return false (1)", () => {
     gameboard.place(ship1, coordinate, !placeVertically);
-    const placeSecondShip = gameboard.place(
-      ship2,
-      coordinate,
-      placeVertically,
-    );
+    const placeSecondShip = gameboard.place(ship2, coordinate, placeVertically);
     expect(placeSecondShip).toEqual(false);
   });
 
   test("placing a ship on top of another should return false (2)", () => {
     gameboard.place(ship1, coordinate, placeVertically);
-    const placeSecondShip = gameboard.place(
-      ship2,
-      coordinate,
-      placeVertically,
-    );
+    const placeSecondShip = gameboard.place(ship2, coordinate, placeVertically);
     expect(placeSecondShip).toEqual(false);
   });
 
@@ -92,7 +84,7 @@ describe("`receiveAttack` method", () => {
     const launchAttack = gameboard.receiveAttack({ x: 0, y: 1 });
     expect(launchAttack).toEqual(true);
   });
-  
+
   test("if the attack misses, it should mark the tile as missed", () => {
     gameboard.receiveAttack({ x: 1, y: 0 });
     expect(gameboard.board[1]).toEqual(TILE_STATE.MISSED);

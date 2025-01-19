@@ -13,7 +13,7 @@ test("the `getLength` function", () => {
   const length = 3;
   const ship = new Ship(length);
   expect(ship.getLength()).toBe(length);
-})
+});
 
 describe("the `hit` method of the ship", () => {
   let ship;

@@ -8,7 +8,7 @@ class UIHandler {
   constructor(playerMap) {
     this.botBoard = this.createBotBoard();
     this.playerBoard = this.createPlayerBoard(playerMap);
-    this.announcers = [createElement("p", {text: "Play your turn."})]; // in case we want more announcers
+    this.announcers = [createElement("p", { text: "Play your turn." })]; // in case we want more announcers
   }
 
   getBoards() {
@@ -71,7 +71,10 @@ class UIHandler {
     const tile = createElement("div", {
       className: ["tile", isHit ? "hit" : "missed"],
     });
-    const currentTile = this.getTileFromCoordinate(this.playerBoard, coordinate);
+    const currentTile = this.getTileFromCoordinate(
+      this.playerBoard,
+      coordinate,
+    );
     currentTile.replaceWith(tile);
   }
 

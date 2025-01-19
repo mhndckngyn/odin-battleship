@@ -5,7 +5,7 @@ export default class Player {
   constructor() {
     this.gameboard = new Gameboard();
   }
-  
+
   getBoard() {
     return this.gameboard.board;
   }
@@ -17,11 +17,11 @@ export default class Player {
   isAllSunk() {
     return this.gameboard.isAllSunk();
   }
-  
+
   setUpBoard(map) {
-    map.forEach(s => {
+    map.forEach((s) => {
       const ship = new Ship(s.length);
       this.gameboard.place(ship, s.coordinate, s.placeVertically);
-    })
+    });
   }
 }
