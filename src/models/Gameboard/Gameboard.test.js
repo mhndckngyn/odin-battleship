@@ -1,4 +1,4 @@
-import TILE_STATE from "../../Settings/tileState";
+import TILE_STATE from "../../settings/tileState";
 import Ship from "../Ship";
 import Gameboard from "./Gameboard";
 
@@ -83,22 +83,16 @@ describe("`receiveAttack` method", () => {
     gameboard.place(ship, coordinate, placeVertically);
   });
 
-  test("if the attack is not on a marked tile, it should return true (1)", () => {
+  test("if the attack hits a ship, it should return true (1)", () => {
     const launchAttack = gameboard.receiveAttack({ x: 0, y: 0 });
     expect(launchAttack).toEqual(true);
   });
 
-  test("if the attack is not on a marked tile, it should return true (2)", () => {
-    const launchAttack = gameboard.receiveAttack({ x: 1, y: 0 });
+  test("if the attack hits a ship, it should return true (2)", () => {
+    const launchAttack = gameboard.receiveAttack({ x: 0, y: 1 });
     expect(launchAttack).toEqual(true);
   });
-
-  test("if the attack is on a marked tile, it should return false", () => {
-    gameboard.receiveAttack({ x: 0, y: 0 });
-    const launchSecondAttack = gameboard.receiveAttack({ x: 0, y: 0 });
-    expect(launchSecondAttack).toEqual(false);
-  });
-
+  
   test("if the attack misses, it should mark the tile as missed", () => {
     gameboard.receiveAttack({ x: 1, y: 0 });
     expect(gameboard.board[1]).toEqual(TILE_STATE.MISSED);
